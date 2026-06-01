@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "VLbRXSXUSyHBlRCtGGqJR"
+uri = "file://artifacts/evlte/src/assets/hero-bg.png"
+type = "image"
+title = "EV charger sleek modern"
+
+[[generated]]
+id = "f9fJm6jKdu14f8R7oAPgP"
+uri = "file://artifacts/evlte/src/assets/charger.png"
+type = "image"
+title = "EV charger hardware"
+
+[[generated]]
+id = "SRfhFNK7ksAcn8HaYvTud"
+uri = "file://artifacts/evlte/src/assets/accessories.png"
+type = "image"
+title = "EV accessories"
+
+[[generated]]
+id = "Zdt1KcLga_ijJ1ApKqOQs"
+uri = "file://artifacts/evlte/src/assets/car-side.png"
+type = "image"
+title = "EV side view"

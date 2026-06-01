@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "EVLTE"
+version = "1.0.0"
+id = "artifacts/evlte"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21514
+
+[services.development]
+run = "pnpm --filter @workspace/evlte run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/evlte", "run", "build" ]
+publicDir = "artifacts/evlte/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21514"
+BASE_PATH = "/"

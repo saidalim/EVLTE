@@ -1,22 +1,32 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: EVLTE EV Charger & Accessories API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: brands
+    description: EV Charger brands
+  - name: products
+    description: Products (chargers & accessories)
+  - name: categories
+    description: Product categories
+  - name: blog
+    description: Blog posts
+  - name: contact
+    description: Contact form
+  - name: settings
+    description: Site settings
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +34,424 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /brands:
+    get:
+      operationId: listBrands
+      tags: [brands]
+      summary: List all EV brands
+      responses:
+        "200":
+          description: List of brands
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Brand"
+    post:
+      operationId: createBrand
+      tags: [brands]
+      summary: Create a new brand (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrandInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Brand"
+
+  /brands/{id}:
+    get:
+      operationId: getBrand
+      tags: [brands]
+      summary: Get a brand by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Brand
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Brand"
+    patch:
+      operationId: updateBrand
+      tags: [brands]
+      summary: Update a brand (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrandUpdate"
+      responses:
+        "200":
+          description: Updated brand
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Brand"
+    delete:
+      operationId: deleteBrand
+      tags: [brands]
+      summary: Delete a brand (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List product categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      operationId: createCategory
+      tags: [categories]
+      summary: Create category (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    patch:
+      operationId: updateCategory
+      tags: [categories]
+      summary: Update category (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+    delete:
+      operationId: deleteCategory
+      tags: [categories]
+      summary: Delete category (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List products with optional filters
+      parameters:
+        - name: brandId
+          in: query
+          schema:
+            type: integer
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+        - name: powerKw
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [charger, accessory]
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+    post:
+      operationId: createProduct
+      tags: [products]
+      summary: Create product (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /products/{id}:
+    get:
+      operationId: getProduct
+      tags: [products]
+      summary: Get product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+    patch:
+      operationId: updateProduct
+      tags: [products]
+      summary: Update product (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdate"
+      responses:
+        "200":
+          description: Updated product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+    delete:
+      operationId: deleteProduct
+      tags: [products]
+      summary: Delete product (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /products/featured:
+    get:
+      operationId: listFeaturedProducts
+      tags: [products]
+      summary: List featured products for home page
+      responses:
+        "200":
+          description: Featured products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /blog:
+    get:
+      operationId: listBlogPosts
+      tags: [blog]
+      summary: List blog posts
+      responses:
+        "200":
+          description: Blog posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BlogPost"
+    post:
+      operationId: createBlogPost
+      tags: [blog]
+      summary: Create blog post (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BlogPostInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+
+  /blog/{id}:
+    get:
+      operationId: getBlogPost
+      tags: [blog]
+      summary: Get blog post by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Blog post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+    patch:
+      operationId: updateBlogPost
+      tags: [blog]
+      summary: Update blog post (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BlogPostUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+    delete:
+      operationId: deleteBlogPost
+      tags: [blog]
+      summary: Delete blog post (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /contact:
+    post:
+      operationId: submitContact
+      tags: [contact]
+      summary: Submit contact form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactInput"
+      responses:
+        "201":
+          description: Submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactMessage"
+
+  /settings:
+    get:
+      operationId: getSiteSettings
+      tags: [settings]
+      summary: Get site settings (contact info, social links)
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+    patch:
+      operationId: updateSiteSettings
+      tags: [settings]
+      summary: Update site settings (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteSettingsUpdate"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +462,373 @@ components:
       required:
         - status
 
+    Brand:
+      type: object
+      required: [id, nameEn, nameRu, nameUz, slug]
+      properties:
+        id:
+          type: integer
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        slug:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        order:
+          type: integer
+
+    BrandInput:
+      type: object
+      required: [nameEn, nameRu, nameUz, slug]
+      properties:
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        slug:
+          type: string
+        logoUrl:
+          type: string
+        description:
+          type: string
+        order:
+          type: integer
+
+    BrandUpdate:
+      type: object
+      properties:
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        slug:
+          type: string
+        logoUrl:
+          type: string
+        description:
+          type: string
+        order:
+          type: integer
+
+    Category:
+      type: object
+      required: [id, nameEn, nameRu, nameUz, type]
+      properties:
+        id:
+          type: integer
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        type:
+          type: string
+          enum: [charger, accessory]
+        slug:
+          type: string
+        order:
+          type: integer
+
+    CategoryInput:
+      type: object
+      required: [nameEn, nameRu, nameUz, type, slug]
+      properties:
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        type:
+          type: string
+          enum: [charger, accessory]
+        slug:
+          type: string
+        order:
+          type: integer
+
+    CategoryUpdate:
+      type: object
+      properties:
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        type:
+          type: string
+          enum: [charger, accessory]
+        slug:
+          type: string
+        order:
+          type: integer
+
+    Product:
+      type: object
+      required: [id, nameEn, nameRu, nameUz, type, price]
+      properties:
+        id:
+          type: integer
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        descriptionEn:
+          type: ["string", "null"]
+        descriptionRu:
+          type: ["string", "null"]
+        descriptionUz:
+          type: ["string", "null"]
+        type:
+          type: string
+          enum: [charger, accessory]
+        powerKw:
+          type: ["string", "null"]
+        price:
+          type: number
+        imageUrl:
+          type: ["string", "null"]
+        brandId:
+          type: ["integer", "null"]
+        categoryId:
+          type: ["integer", "null"]
+        featured:
+          type: boolean
+        inStock:
+          type: boolean
+
+    ProductInput:
+      type: object
+      required: [nameEn, nameRu, nameUz, type, price]
+      properties:
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        descriptionEn:
+          type: string
+        descriptionRu:
+          type: string
+        descriptionUz:
+          type: string
+        type:
+          type: string
+          enum: [charger, accessory]
+        powerKw:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        brandId:
+          type: integer
+        categoryId:
+          type: integer
+        featured:
+          type: boolean
+        inStock:
+          type: boolean
+
+    ProductUpdate:
+      type: object
+      properties:
+        nameEn:
+          type: string
+        nameRu:
+          type: string
+        nameUz:
+          type: string
+        descriptionEn:
+          type: string
+        descriptionRu:
+          type: string
+        descriptionUz:
+          type: string
+        type:
+          type: string
+          enum: [charger, accessory]
+        powerKw:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        brandId:
+          type: integer
+        categoryId:
+          type: integer
+        featured:
+          type: boolean
+        inStock:
+          type: boolean
+
+    BlogPost:
+      type: object
+      required: [id, titleEn, titleRu, titleUz, contentEn, contentRu, contentUz, createdAt]
+      properties:
+        id:
+          type: integer
+        titleEn:
+          type: string
+        titleRu:
+          type: string
+        titleUz:
+          type: string
+        contentEn:
+          type: string
+        contentRu:
+          type: string
+        contentUz:
+          type: string
+        summaryEn:
+          type: ["string", "null"]
+        summaryRu:
+          type: ["string", "null"]
+        summaryUz:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    BlogPostInput:
+      type: object
+      required: [titleEn, titleRu, titleUz, contentEn, contentRu, contentUz]
+      properties:
+        titleEn:
+          type: string
+        titleRu:
+          type: string
+        titleUz:
+          type: string
+        contentEn:
+          type: string
+        contentRu:
+          type: string
+        contentUz:
+          type: string
+        summaryEn:
+          type: string
+        summaryRu:
+          type: string
+        summaryUz:
+          type: string
+        imageUrl:
+          type: string
+
+    BlogPostUpdate:
+      type: object
+      properties:
+        titleEn:
+          type: string
+        titleRu:
+          type: string
+        titleUz:
+          type: string
+        contentEn:
+          type: string
+        contentRu:
+          type: string
+        contentUz:
+          type: string
+        summaryEn:
+          type: string
+        summaryRu:
+          type: string
+        summaryUz:
+          type: string
+        imageUrl:
+          type: string
+
+    ContactInput:
+      type: object
+      required: [name, email, message]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        message:
+          type: string
+
+    ContactMessage:
+      type: object
+      required: [id, name, email, message, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        message:
+          type: string
+        createdAt:
+          type: string
+
+    SiteSettings:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: integer
+        phone:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        instagramUrl:
+          type: ["string", "null"]
+        facebookUrl:
+          type: ["string", "null"]
+        telegramUrl:
+          type: ["string", "null"]
+        youtubeUrl:
+          type: ["string", "null"]
+        addressEn:
+          type: ["string", "null"]
+        addressRu:
+          type: ["string", "null"]
+        addressUz:
+          type: ["string", "null"]
+
+    SiteSettingsUpdate:
+      type: object
+      properties:
+        phone:
+          type: string
+        email:
+          type: string
+        instagramUrl:
+          type: string
+        facebookUrl:
+          type: string
+        telegramUrl:
+          type: string
+        youtubeUrl:
+          type: string
+        addressEn:
+          type: string
+        addressRu:
+          type: string
+        addressUz:
+          type: string
